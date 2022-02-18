@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Router } from "@reach/router";
-import NotFound from "./pages/NotFound.js";
-import Skeleton from "./pages/Skeleton.js";
-
+import LoginButton from "./pages/LoginButton.js";
+import Message from "./modules/Message.js";
+import NewMessage from "./modules/NewMessage.js";
 import "../utilities.css";
 
 import { socket } from "../client-socket.js";
@@ -38,12 +37,22 @@ const App = () => {
     post("/api/logout");
   };
 
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    get("/api/allmessages").then((messages) => {
+      setMessages(messages);
+    });
+  }, []);
+
   return (
     <>
-      <Router>
-        <Skeleton path="/" handleLogin={handleLogin} handleLogout={handleLogout} userId={userId} />
-        <NotFound default />
-      </Router>
+      <LoginButton handleLogin={handleLogin} handleLogout={handleLogout} userId={userId} />
+      <h1>Welcome to AceBook!</h1>
+      <NewMessage />
+      {messages.map((message) => (
+        <Message name={message.name} content={message.content} />
+      ))}
     </>
   );
 };
