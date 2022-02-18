@@ -39,6 +39,24 @@ router.post("/initsocket", (req, res) => {
   res.send({});
 });
 
+// Get all the messages
+router.get("/allmessages", (req, res) => {
+  Message.find({}).then((messages) => {
+    res.send(messages);
+  })
+})
+
+// Send a message to everyone
+// Needs 'content' as an input
+router.post("/newmessage", (req, res) => {
+  let newMessage = new Message({
+    userId: req.user._id,
+    name: req.user.name,
+    content: req.body.content
+  })
+  newMessage.save()
+})
+
 // |------------------------------|
 // | write your API methods below!|
 // |------------------------------|
